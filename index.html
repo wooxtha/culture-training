@@ -15,19 +15,11 @@
       padding: 20px;
       box-shadow: 0 0 10px #0f0;
       border-radius: 12px;
+      text-align: center;
     }
     h1 {
-      text-align: center;
       color: #7adb6e;
       margin-bottom: 30px;
-    }
-    .question-image {
-      width: 100%;
-      max-height: 250px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px #7adb6e;
     }
     .question {
       font-size: 1.3em;
@@ -36,6 +28,8 @@
     .options {
       list-style-type: none;
       padding: 0;
+      max-width: 400px;
+      margin: 0 auto;
     }
     .options li {
       background: #1e1e1e;
@@ -66,6 +60,9 @@
       padding: 15px;
       border-radius: 8px;
       display: none;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
     #nextBtn {
       margin-top: 20px;
@@ -83,15 +80,50 @@
     #nextBtn:hover {
       background-color: #5bb854;
     }
+    #startPage {
+      margin-top: 100px;
+    }
+    #startBtn {
+      padding: 15px 40px;
+      font-size: 1.3em;
+      background-color: #7adb6e;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      color: #121212;
+      font-weight: 700;
+      transition: background-color 0.3s;
+    }
+    #startBtn:hover {
+      background-color: #5bb854;
+    }
+    #scorePage {
+      display: none;
+      margin-top: 100px;
+    }
+    #scorePage h2 {
+      color: #7adb6e;
+    }
   </style>
 </head>
 <body>
-  <h1>Filipino Quiz</h1>
-  <img id="questionImage" class="question-image" src="" alt="Question Image" />
-  <div id="question" class="question"></div>
-  <ul id="options" class="options"></ul>
-  <div id="explanation"></div>
-  <button id="nextBtn">Next</button>
+  <div id="startPage">
+    <h1>Filipino Quiz</h1>
+    <button id="startBtn">Start Quiz</button>
+  </div>
+
+  <div id="quizPage" style="display:none;">
+    <h1>Filipino Quiz</h1>
+    <div id="question" class="question"></div>
+    <ul id="options" class="options"></ul>
+    <div id="explanation"></div>
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <div id="scorePage">
+    <h1>Thank you for playing!</h1>
+    <h2>Your Score: <span id="finalScore"></span> / <span id="totalQuestions"></span></h2>
+  </div>
 
   <audio id="audioCorrect" src="correct-6033.mp3"></audio>
   <audio id="audioWrong" src="wrong-47985.mp3"></audio>
@@ -100,70 +132,60 @@
     const quizData = [
       {
         question: "What is 'Hello' in Filipino?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Tagalog.svg/800px-Tagalog.svg.png",
         options: ["Kumusta", "Magandang umaga", "Salamat", "Oo"],
         answer: 0,
         explanation: "Kumusta means Hello. It comes from Spanish '¿Cómo está?'",
       },
       {
         question: "What does 'Magandang umaga' mean?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Sunrise_at_Mount_Banahaw%2C_Luzon_Island%2C_Philippines.jpg/800px-Sunrise_at_Mount_Banahaw%2C_Luzon_Island%2C_Philippines.jpg",
         options: ["Good morning", "Good afternoon", "Good evening", "Thank you"],
         answer: 0,
         explanation: "Magandang umaga means Good morning. 'Maganda' = beautiful/good, 'Umaga' = morning.",
       },
       {
         question: "How do you say 'Thank you' politely in Filipino?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Salamat.svg/800px-Salamat.svg.png",
         options: ["Salamat po", "Walang anuman", "Pakiusap", "Paumanhin"],
         answer: 0,
         explanation: "Salamat po means Thank you politely. 'Po' is a polite particle.",
       },
       {
         question: "What is the Filipino word for 'Hospital'?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Philippine_General_Hospital.JPG/800px-Philippine_General_Hospital.JPG",
         options: ["Ospital", "Mall", "Opisina", "Paaralan"],
         answer: 0,
         explanation: "'Ospital' comes from Spanish 'hospital'.",
       },
       {
         question: "What does 'Sige' mean?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/People_talking_Manila.jpg/800px-People_talking_Manila.jpg",
         options: ["Okay", "No", "Goodbye", "Thank you"],
         answer: 0,
         explanation: "Sige means Okay or go ahead.",
       },
       {
         question: "What is the Filipino word for 'Market'?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Tanghalian_sa_Palengke.jpg/800px-Tanghalian_sa_Palengke.jpg",
         options: ["Palengke", "Mall", "Tindahan", "CR"],
         answer: 0,
         explanation: "Palengke is the native Filipino term for Market.",
       },
       {
         question: "How do you say 'No' in Filipino?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Filipino_text_in_English.jpg/800px-Filipino_text_in_English.jpg",
         options: ["Hindi", "Oo", "Salamat", "Walang anuman"],
         answer: 0,
         explanation: "Hindi means No in Filipino.",
       },
       {
         question: "What is 'Magaling!' used to express?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Applause_icon.svg/768px-Applause_icon.svg.png",
         options: ["Good!", "No", "Sorry", "Please"],
         answer: 0,
         explanation: "Magaling means Good! or skilled.",
       },
       {
         question: "What does 'Paumanhin' mean?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Man_praying_in_sunset.jpg/800px-Man_praying_in_sunset.jpg",
         options: ["Excuse me / Sorry", "Thank you", "Please", "Yes"],
         answer: 0,
         explanation: "Paumanhin means Excuse me or Sorry.",
       },
       {
         question: "What is the Filipino word for 'Police Station'?",
-        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/PNP_Headquarters%2C_Quezon_City.jpg/800px-PNP_Headquarters%2C_Quezon_City.jpg",
         options: ["Istasyon ng pulis", "Ospital", "Mall", "Hotel"],
         answer: 0,
         explanation: "'Istasyon ng pulis' means Police Station.",
@@ -172,49 +194,70 @@
 
     let currentQuestion = 0;
     let answered = false;
+    let score = 0;
+    let shuffledOptions = [];
 
+    const startPage = document.getElementById('startPage');
+    const startBtn = document.getElementById('startBtn');
+    const quizPage = document.getElementById('quizPage');
     const questionEl = document.getElementById('question');
     const optionsEl = document.getElementById('options');
     const explanationEl = document.getElementById('explanation');
     const nextBtn = document.getElementById('nextBtn');
-    const questionImage = document.getElementById('questionImage');
     const audioCorrect = document.getElementById('audioCorrect');
     const audioWrong = document.getElementById('audioWrong');
+    const scorePage = document.getElementById('scorePage');
+    const finalScoreEl = document.getElementById('finalScore');
+    const totalQuestionsEl = document.getElementById('totalQuestions');
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
     function loadQuestion() {
       answered = false;
       explanationEl.style.display = 'none';
       nextBtn.style.display = 'none';
       optionsEl.innerHTML = '';
-      questionImage.style.display = 'block';
-      questionImage.src = quizData[currentQuestion].image;
+
       questionEl.textContent = quizData[currentQuestion].question;
 
-      quizData[currentQuestion].options.forEach((option, index) => {
+      // Prepare shuffled options with their original indexes
+      shuffledOptions = quizData[currentQuestion].options
+        .map((opt, idx) => ({opt, idx}))
+      shuffledOptions = shuffle(shuffledOptions);
+
+      shuffledOptions.forEach(({opt, idx}) => {
         const li = document.createElement('li');
-        li.textContent = option;
-        li.addEventListener('click', () => selectOption(li, index));
+        li.textContent = opt;
+        li.addEventListener('click', () => selectOption(li, idx));
         optionsEl.appendChild(li);
       });
     }
 
     function selectOption(selectedLi, selectedIndex) {
       if (answered) return;
-      answered = true;
 
+      answered = true;
       const correctIndex = quizData[currentQuestion].answer;
 
       Array.from(optionsEl.children).forEach((li, idx) => {
-        li.style.pointerEvents = 'none'; // disable all options after answer
-        if (idx === correctIndex) {
+        li.style.pointerEvents = 'none';
+        // Highlight correct answer
+        if(shuffledOptions[idx].idx === correctIndex){
           li.classList.add('correct', 'selected');
         }
       });
 
-      if (selectedIndex === correctIndex) {
+      if(selectedIndex === correctIndex){
         selectedLi.classList.add('correct', 'selected');
         explanationEl.textContent = quizData[currentQuestion].explanation + " 🎉";
         audioCorrect.play();
+        score++;
       } else {
         selectedLi.classList.add('wrong', 'selected');
         explanationEl.textContent = quizData[currentQuestion].explanation + " ❌";
@@ -227,15 +270,24 @@
 
     nextBtn.addEventListener('click', () => {
       currentQuestion++;
-      if (currentQuestion >= quizData.length) {
-        alert("You've completed the quiz! 🎉");
-        currentQuestion = 0;
+      if(currentQuestion < quizData.length){
+        loadQuestion();
+      } else {
+        // show score page
+        quizPage.style.display = 'none';
+        scorePage.style.display = 'block';
+        finalScoreEl.textContent = score;
+        totalQuestionsEl.textContent = quizData.length;
       }
-      loadQuestion();
     });
 
-    // Start quiz
-    loadQuestion();
+    startBtn.addEventListener('click', () => {
+      startPage.style.display = 'none';
+      quizPage.style.display = 'block';
+      currentQuestion = 0;
+      score = 0;
+      loadQuestion();
+    });
   </script>
 </body>
 </html>
