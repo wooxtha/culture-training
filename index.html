@@ -186,6 +186,7 @@
       explanationEl.style.display = 'none';
       nextBtn.style.display = 'none';
       optionsEl.innerHTML = '';
+      questionImage.style.display = 'block';
       questionImage.src = quizData[currentQuestion].image;
       questionEl.textContent = quizData[currentQuestion].question;
 
@@ -198,19 +199,19 @@
     }
 
     function selectOption(selectedLi, selectedIndex) {
-      if (answered) return; // prevent multiple answers
-
+      if (answered) return;
       answered = true;
+
       const correctIndex = quizData[currentQuestion].answer;
 
       Array.from(optionsEl.children).forEach((li, idx) => {
-        li.style.pointerEvents = 'none'; // disable all options after selection
-        if(idx === correctIndex){
+        li.style.pointerEvents = 'none'; // disable all options after answer
+        if (idx === correctIndex) {
           li.classList.add('correct', 'selected');
         }
       });
 
-      if(selectedIndex === correctIndex){
+      if (selectedIndex === correctIndex) {
         selectedLi.classList.add('correct', 'selected');
         explanationEl.textContent = quizData[currentQuestion].explanation + " 🎉";
         audioCorrect.play();
@@ -226,21 +227,15 @@
 
     nextBtn.addEventListener('click', () => {
       currentQuestion++;
-      if(currentQuestion < quizData.length){
-        loadQuestion();
-      } else {
-        questionEl.textContent = "🎉 Congratulations! You finished the Filipino Quiz!";
-        optionsEl.innerHTML = '';
-        questionImage.style.display = 'none';
-        explanationEl.style.display = 'none';
-        nextBtn.style.display = 'none';
+      if (currentQuestion >= quizData.length) {
+        alert("You've completed the quiz! 🎉");
+        currentQuestion = 0;
       }
+      loadQuestion();
     });
 
+    // Start quiz
     loadQuestion();
   </script>
 </body>
 </html>
-
-
-
